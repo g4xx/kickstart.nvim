@@ -662,5 +662,15 @@ cmp.setup {
   },
 }
 
+-- Keep the cursorline in the middle of the window
+vim.o.scrolloff = 999
+
+-- Highlight the current line
+vim.wo.cursorline = true
+vim.wo.cursorlineopt = "both"
+
+-- Relative line numbers
+vim.wo.relativenumber = true
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
