@@ -914,10 +914,8 @@ local is_remote = os.getenv 'SSH_CONNECTION' ~= nil
 local is_wsl = vim.fn.has 'wsl' == 1
 local is_wayland = os.getenv 'WAYLAND_DISPLAY' ~= nil
 if is_remote or is_wsl then
-  -- Use OSC 52 for remote / WSL -> terminal clipboard
-  vim.g.clipboard = 'unnamedplus'
+  vim.g.clipboard = 'osc52'
 elseif is_wayland then
-  -- Local Wayland machine, use wl-copy/wl-paste
   vim.g.clipboard = {
     name = 'wlcopy',
     copy = { ['+'] = 'wl-copy', ['*'] = 'wl-copy' },
