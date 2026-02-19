@@ -157,7 +157,7 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
+vim.o.scrolloff = 999
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -910,7 +910,26 @@ require('lazy').setup({
   },
 })
 
-vim.g.clipboard = 'osc52'
+local is_remote = os.getenv 'SSH_CONNECTION' ~= nil
+local is_wsl = vim.fn.has 'wsl' == 1
+local is_wayland = os.getenv 'WAYLAND_DISPLAY' ~= nil
+if is_remote or is_wsl then
+  -- Use OSC 52 for remote / WSL -> terminal clipboard
+  vim.g.clipboard = 'unnamedplus'
+elseif is_wayland then
+  -- Local Wayland machine, use wl-copy/wl-paste
+  vim.g.clipboard = {
+    name = 'wlcopy',
+    copy = { ['+'] = 'wl-copy', ['*'] = 'wl-copy' },
+    paste = { ['+'] = 'wl-paste', ['*'] = 'wl-paste' },
+    cache_enabled = 0,
+  }
+else
+  -- fallback: X11 or other
+  vim.g.clipboard = 'unnamedplus'
+end
+
+-- vim.g.clipboard = 'osc52'
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
